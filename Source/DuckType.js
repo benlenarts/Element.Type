@@ -1,5 +1,5 @@
 
-var Type = new Class({
+var DuckType = new Class({
 
   Implements: Events,
 
@@ -12,14 +12,14 @@ var Type = new Class({
     this.properties = {};
     this.$eventScope = [];
     this.$methods = {};
-    this.Instance = new Class({ Extends: Type.Instance });
+    this.Instance = new Class({ Extends: DuckType.Instance });
 
     (options.behaviors || []).each(function(b) { this.addBehavior(b); }, this);
     this.addBehavior(options);
   },
 
   getElements: function(multiple) {
-    var isEventTarget = (Type.$eventTarget.getLast()||{}).type === this
+    var isEventTarget = (DuckType.$eventTarget.getLast()||{}).type === this
     var selector = isEventTarget ? this.selector : '';
     var root = isEventTarget ? this.root : this;
     while (root && !root.$eventScope.length) {
@@ -50,7 +50,7 @@ var Type = new Class({
     if ($type(property) == 'string') {
       var splt = property.split(':');
       var type = splt[0], args = splt.splice(1); 
-      property = Type.Properties[type].apply(Type.Properties, args);
+      property = DuckType.Properties[type].apply(DuckType.Properties, args);
     }
     this.properties[property.name] = property;
     return this;
@@ -92,7 +92,7 @@ var Type = new Class({
     if ($type(behavior) == 'string') {
       var splt = behavior.split(':');
       var type = splt[0], args = splt.splice(1);
-      behavior = Type.Behaviors[type].apply(this, args);
+      behavior = DuckType.Behaviors[type].apply(this, args);
     }
     (behavior.properties || []).each(function(prop) { this.addProperty(prop); }, this);
     this.addEvents(behavior.events || {});
@@ -117,7 +117,7 @@ var Type = new Class({
 
   getSubSet: function(selector, options) {
     options = options || {};
-    var sub = new Type(this.selector + selector, {
+    var sub = new DuckType(this.selector + selector, {
       'root': this.root,
       'behaviors': options.behaviors,
       'properties': Hash.getValues(this.properties).concat(options.properties||[]),
@@ -130,7 +130,7 @@ var Type = new Class({
 
 });
 
-Type.implement({
+DuckType.implement({
   /*override*/ addEvent: function(name, fn) {
     // if dom event and first time: install delegation
     if (Element.NativeEvents[name] && !this.$events[name]) {
@@ -147,9 +147,9 @@ Type.implement({
       var is = this.$eventScope.length ? [this.$eventScope.getLast()] : this.getInstances();
       var args = Array.flatten(arguments);
       is.each(function(i) { 
-        Type.$eventTarget.push(i); 
+        DuckType.$eventTarget.push(i); 
         fn.apply(i, args); 
-        Type.$eventTarget.pop(); 
+        DuckType.$eventTarget.pop(); 
       });
     });
     return this;
@@ -157,9 +157,9 @@ Type.implement({
 
 });
 
-Type.$eventTarget = [];
+DuckType.$eventTarget = [];
 
-Type.Properties = {
+DuckType.Properties = {
 
   'class': function(property, klass) {
     klass = klass || property;
@@ -189,7 +189,7 @@ Type.Properties = {
 
 };
 
-Type.Behaviors = {
+DuckType.Behaviors = {
 
   'unique': function(prop) {
     var result = {'events':{}};
@@ -213,7 +213,7 @@ Type.Behaviors = {
     var events = {};
     if (prop) {
       events['set '+prop] = function(value) {
-        var timer = this.element.retrieve('Type.Behaviors.while timer', {});
+        var timer = this.element.retrieve('DuckType.Behaviors.while timer', {});
         if (value) timer.handle = this.type.fireEventFromInstance.periodical(interval, this.type, [this, name]);
         else $clear(timer.handle);
       }
@@ -225,12 +225,12 @@ Type.Behaviors = {
 
 };
 
-Type.Instance = new Class({
+DuckType.Instance = new Class({
 
   initialize: function(type, element) {
     this.type = type;
     this.element = element;
-    this.state = element.retrieve('Type.Instance:state', {});
+    this.state = element.retrieve('DuckType.Instance:state', {});
   },
 
   get: function(prop) {
