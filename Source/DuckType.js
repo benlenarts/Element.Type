@@ -1,3 +1,21 @@
+/*
+---
+description: provides the DuckType class for duck typed delegated behavior abstraction.
+
+license: MIT-style
+
+authors:
+- Ben Lenarts
+
+requires:
+  core/1.2.4: '*'
+#actually:
+#  - core/1.2.4: [Element.Events]
+
+provides: [DuckType, DuckType.Properties, DuckType.Behaviors, DuckType.Instance]
+
+...
+*/
 
 var DuckType = new Class({
 
