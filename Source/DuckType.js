@@ -94,7 +94,7 @@ var DuckType = new Class({
       var type = splt[0], args = splt.splice(1);
       behavior = DuckType.Behaviors[type].apply(this, args);
     }
-    (behavior.properties || []).each(function(prop) { this.addProperty(prop); }, this);
+    (behavior.properties||[]).each(function(prop) { this.addProperty(prop); }, this);
     this.addEvents(behavior.events || {});
     this.implement(behavior.methods || {});
   },
@@ -148,8 +148,8 @@ DuckType.implement({
       var args = Array.flatten(arguments);
       is.each(function(i) { 
         DuckType.$eventTarget.push(i); 
-        fn.apply(i, args); 
-        DuckType.$eventTarget.pop(); 
+        try { fn.apply(i, args); }
+        finally { DuckType.$eventTarget.pop(); }
       });
     });
     return this;
