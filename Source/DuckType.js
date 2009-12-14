@@ -14,6 +14,9 @@ requires:
 
 provides: [DuckType, DuckType.Properties, DuckType.Behaviors, DuckType.Instance]
 
+inspiration:
+  Spiffy by Lon Boonen (closed source, developed at Q42 in the Netherlands)
+
 ...
 */
 
