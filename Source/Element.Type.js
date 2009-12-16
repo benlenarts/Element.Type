@@ -1,6 +1,6 @@
 /*
 ---
-description: provides the Element.Type class for duck typed delegated behavior abstraction.
+description: provides the Element.Type class for delegated behavior abstraction.
 
 license: MIT-style
 
@@ -16,6 +16,9 @@ provides: [Element.Type, Element.Type.Properties, Element.Type.Behaviors, Elemen
 
 inspiration:
   Spiffy by Lon Boonen (closed source, developed at Q42 in the Netherlands)
+
+credits:
+  Q42 (http://q42.nl), for allowing me to release this code as open-source
 
 ...
 */

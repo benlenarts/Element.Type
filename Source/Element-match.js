@@ -14,6 +14,9 @@ requires:
 
 provides: [Element-match]
 
+credits:
+  Q42 (http://q42.nl), for allowing me to release this code as open-source
+
 ...
 */
 
@@ -21,7 +24,10 @@ provides: [Element-match]
  
   // fix reference to original Element.match in :not before match gets overridden
   var matchEl = Element.match.bind(Element);
-  Selectors.Pseudo.not = function(selector) { return matchEl(this, selector); };
+
+  Selectors.Pseudo.not = function(selector) { 
+    return matchEl(this, selector); 
+  };
 
   var parseCache = $H();
 
@@ -34,7 +40,7 @@ provides: [Element-match]
     '>': function(el, selector) { return $$(el.getParent(selector)); }, 
     ' ': function(el, selector) { return el.getParents(selector); },
     '+': function(el, selector) { return $$(el.getPrevious(selector)); },
-    '~': function(el, selector) { return el.getAllNext(selector).concat(el.getAllPrevious(selector)); }
+    '~': function(el, selector) { return el.getAllPrevious(selector).concat(el.getAllNext(selector)); }
   }
 
   var originalMatch = Element.Prototype.match;
