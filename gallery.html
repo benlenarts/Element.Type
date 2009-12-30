@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>Element.Type Demo: Gallery</title>
+    <script src="core.js"></script>
+    <script src="master/Source/Element-match.js"></script>
+    <script src="master/Source/Element.Type.js"></script>
+    <script>
+
+// Step 1: Define the structure of the HTML you want to apply behavior to
+// ----------------------------------------------------------------------
+//
+// The variables and properties defined here will act as a lexicon for the 
+// behavior.
+
+var gallery = new Element.Type('.gallery', {
+  properties: ['class:playing']
+});
+
+var control = new Element.Type('.control', {
+  root: gallery, 
+  properties: ['class:disabled']
+});
+
+var previous = control.getSubSet('.prev');
+var next = control.getSubSet('.next');
+var play = control.getSubSet('.play');
+var pause = control.getSubSet('.pause');
+
+var thumbnails = new Element.Type('.thumbnails > a', {
+  root: gallery, 
+  properties: ['class:selected'],
+  behaviors: ['list']
+});
+
+var firstThumbnail = thumbnails.getSubSet(':first-child');
+var selectedThumbnail = thumbnails.getSubSet('.selected');
+
+var selectedImage = new Element.Type('img', {
+  root: selectedThumbnail, 
+  properties: ['property:src']
+});
+
+var picture = new Element.Type('.preview', {
+  root: gallery, 
+  properties: ['property:src']
+});
+
+
+// Step 2: Define the behavior, using events and predefined behaviors
+// ------------------------------------------------------------------
+
+previous.addEvent('click', function(event) {
+  var prev = selectedThumbnail.getPrevious();
+  if (prev) prev.set('selected', true);
+  event.preventDefault();
+});
+
+next.addEvent('click', function(event) {
+  var next = selectedThumbnail.getNext();
+  if (next) next.set('selected', true);
+  event.preventDefault();
+});
+
+thumbnails.addEvent('click', function(event) {
+  this.set('selected', true);
+  event.preventDefault();
+});
+
+thumbnails.addBehavior('unique:selected');
+
+thumbnails.addEvent('after set selected', function(value) {
+  if (!value) return;
+  previous.set('disabled', !selectedThumbnail.getPrevious());
+  next.set('disabled', !selectedThumbnail.getNext());
+  picture.set('src', selectedImage.get('src'));
+});
+
+play.addEvent('click', function(event) { 
+  gallery.set('playing',true); 
+  event.preventDefault(); 
+});
+
+pause.addEvent('click', function(event) { 
+  gallery.set('playing',false); 
+  event.preventDefault(); 
+});
+
+gallery.addBehavior('periodical event:time-to-advance:1000:playing');
+
+gallery.addEvent('time-to-advance', function() {
+  var next = selectedThumbnail.getNext();
+  if (next) next.set('selected', true);
+  else gallery.set('playing',false);
+});
+
+// load some pictures from flickr
+
+function loadPhotos(json) {
+  var srcs = json.items.map(function(item) { return item.media.m; });
+  var html = srcs.map(function(src) { return '<a href="' + src + '"><img src="' + src + '"/></a>'; });
+  $$('.thumbnails').set('html', html);
+  firstThumbnail.set('selected',true);
+}
+
+window.addEvent('load', function() {
+  var head = $(document).getElement('head');
+  new Element('script', {
+    'src': 'http://www.flickr.com/services/feeds/photos_public.gne?format=json&jsoncallback=loadPhotos'
+  }).inject(head);
+});
+
+    </script>
+
+    <!-- CSS by Lon Boonen -->
+    <style>
+.gallery
+{
+  position:absolute;
+  top:30px; left:50px;
+  width:400px; height:300px;
+  border:solid 5px #007DAD;
+  background-color:#AAE0FF;
+}
+
+.gallery.second
+{
+  position:absolute;
+  top:360px; left:50px;
+  width:400px; height:300px;
+  border:solid 5px #007DAD;
+  background-color:#AAE0FF;
+}
+
+.preview
+{
+  position:absolute;
+  top:10px; left:125px;
+  width:150px;
+}
+
+.prev
+{
+  position:absolute;
+  bottom:40px; left:10px;
+  width:20px; height:20px;
+  text-decoration:none;
+}
+
+.next
+{
+  position:absolute;
+  bottom:40px; right:10px;
+  width:20px; height:20px;
+  text-decoration:none;
+}
+
+.spiffy .preview,
+.spiffy .prev,
+.spiffy .next
+{
+  display:block;
+}
+
+.thumbnails
+{
+  position:absolute;
+  bottom:25px; left:40px;
+  width:300px; height:50px;
+  padding:1px;
+  border:solid 2px #007DAD;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+.thumbnails a
+{
+  display: inline-block;
+  text-decoration:none;
+  border:solid 2px #AAE0FF;
+  height:40px;
+}
+
+.thumbnails a.selected 
+{
+  border-color:red;
+}
+
+.thumbnails img
+{
+  height:40px;
+  border:none;
+}
+
+a.disabled
+{
+  display:none;
+}
+
+.play,
+.pause
+{
+  position:absolute;
+  bottom:3px; left:200px;
+  width:20px; height:20px;
+  text-decoration:none;
+}
+
+.pause { display: none; }
+
+.playing .play { display: none; }
+.playing .pause { display: inline; }
+
+    </style>
+  </head>
+  <body>
+
+    <div class="gallery">
+      <img class="preview" src=""/>
+      <a href="#" class="disabled prev control" title="previous foto">&lt;</a>
+      <a href="#" class="next control" title="next foto">&gt;</a>
+      <a href="#" class="play control" title="start slideshow">&gt;</a>
+      <a href="#" class="pause control" title="pause slideshow">||</a>
+      <div class="thumbnails">
+      </div>
+    </div>
+
+    <div class="second gallery">
+      <img class="preview" src=""/>
+      <a href="#" class="disabled prev control" title="previous foto">&lt;</a>
+      <a href="#" class="next control" title="next foto">&gt;</a>
+      <a href="#" class="play control" title="start slideshow">&gt;</a>
+      <a href="#" class="pause control" title="pause slideshow">||</a>
+      <div class="thumbnails">
+      </div>
+    </div>
+
+  </body>
+    
+</html>
