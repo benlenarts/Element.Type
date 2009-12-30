@@ -1,4 +1,5 @@
 name: Element.Type
 author: benlenarts
 category: Interface
-tags: [events, delegation, element, abstraction]
+tags: [events, delegation, element, abstraction, behavioral]
+demo: http://benlenarts.github.com/Element.Type/gallery.html 
