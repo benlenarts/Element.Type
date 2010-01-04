@@ -1,7 +1,7 @@
 Element.Type
 ============
 
-Define interface hierarchies and describe behavior on these higher order nodes. Event plumbing is abstracted.
+Abstraction layer for lazy collections of elements. You can define interface models and behavior of those models without referring to actual elements. In this way, no event plumbing is needed when part of the DOM changes.
 
 ![Screenshot](http://benlenarts.github.com/Element.Type/images/screenshot_gallery.png)
 
