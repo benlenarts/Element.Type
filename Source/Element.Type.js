@@ -8,9 +8,8 @@ authors:
 - Ben Lenarts
 
 requires:
-  core/1.2.4: '*'
-#actually:
-#  - core/1.2.4: [Element.Events]
+- core/1.2.4: Element.Events
+- Element-match
 
 provides: [Element.Type, Element.Type.Properties, Element.Type.Behaviors, Element.Type.Instance]
 

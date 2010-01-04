@@ -8,9 +8,7 @@ authors:
 - Ben Lenarts
 
 requires:
-  core/1.2.4: '*'
-#actually:
-#  - core/1.2.4: [Selectors]
+ - core/1.2.4: Selectors
 
 provides: [Element-match]
 
