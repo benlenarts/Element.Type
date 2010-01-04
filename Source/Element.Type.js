@@ -8,8 +8,8 @@ authors:
 - Ben Lenarts
 
 requires:
-- core/1.2.4: Element.Events
 - Element-match
+- core/1.2.4: Element.Events
 
 provides: [Element.Type, Element.Type.Properties, Element.Type.Behaviors, Element.Type.Instance]
 
@@ -71,8 +71,7 @@ Element.Type = new Class({
 
   addProperty: function(property) {
     if ($type(property) == 'string') {
-      var splt = property.split(':');
-      var type = splt[0], args = splt.splice(1); 
+      var args = property.split(':'), type = args.shift();
       property = Element.Type.Properties[type].apply(Element.Type.Properties, args);
     }
     this.properties[property.name] = property;
@@ -113,8 +112,7 @@ Element.Type = new Class({
 
   addBehavior: function(behavior) {
     if ($type(behavior) == 'string') {
-      var splt = behavior.split(':');
-      var type = splt[0], args = splt.splice(1);
+      var args = behavior.split(':'), type = args.shift();
       behavior = Element.Type.Behaviors[type].apply(this, args);
     }
     (behavior.properties||[]).each(function(prop) { this.addProperty(prop); }, this);
